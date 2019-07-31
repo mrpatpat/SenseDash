@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SenseDash</string>
+    <string name="dummy_voltage">3.2V</string>
 </resources>
