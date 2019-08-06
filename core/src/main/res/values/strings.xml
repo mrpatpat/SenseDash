@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">sensedashcore</string>
+    <string name="nearby_service_id">SENSEDASH_SERVICE</string>
+</resources>
