@@ -1,15 +1,14 @@
 package com.mrpatpat.sensedash
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 
 class DebugViewModel: ViewModel() {
+    val nearbyDiscoveryMessages: MutableLiveData<String> = MutableLiveData()
     val nearbyDiscoveryConnectionState: MutableLiveData<DiscoveryConnectionState> = MutableLiveData()
     val nearbyDiscoveryConnectionProgressMax = 4
     val nearbyDiscoveryConnectionProgressMin = 0
 
+    val nearbyAdvertisementMessages: MutableLiveData<String> = MutableLiveData()
     val nearbyAdvertisementConnectionState: MutableLiveData<AdvertisementConnectionState> = MutableLiveData()
     val nearbyAdvertisementConnectionProgressMax = 3
     val nearbyAdvertisementConnectionProgressMin = 0
@@ -50,4 +49,18 @@ class DebugViewModel: ViewModel() {
             it.toString()
         }
     }
+
+    fun getMessageLog() : LiveData<String> {
+        val discovery = Transformations.map(nearbyDiscoveryMessages) {
+            "D: $it"
+        }
+        val advertisement = Transformations.map(nearbyAdvertisementMessages) {
+            "A: $it"
+        }
+        val merged = MediatorLiveData<String>()
+        merged.addSource(discovery) { value -> merged.setValue(value) }
+        merged.addSource(advertisement) { value -> merged.setValue(value) }
+        return merged
+    }
+
 }

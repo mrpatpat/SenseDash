@@ -69,10 +69,25 @@ class DebugActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRe
 
     private fun connectViewModelToNearbyDiscoveryService() {
         nearbyDiscovery.state.observe(this@DebugActivity, Observer { x -> model.nearbyDiscoveryConnectionState.value = x })
+        //nearbyDiscovery.msg.observe(this@DebugActivity, Observer { x -> model.nearbyDiscoveryMessages.value = x })
+        nearbyDiscovery.msg.observe(this, Observer { x -> tv_msg.append("\nAdvertiser: " + x) }) //TODO VM
     }
 
     private fun connectViewModelToNearbyAdvertisementService() {
         nearbyAdvertisement.state.observe(this@DebugActivity, Observer { x -> model.nearbyAdvertisementConnectionState.value = x })
+        //nearbyDiscovery.msg.observe(this@DebugActivity, Observer { x -> model.nearbyAdvertisementMessages.value = x })
+        nearbyAdvertisement.msg.observe(this, Observer { x -> tv_msg.append("\nDiscoverer: " + x) }) //TODO VM
+    }
+
+    fun onMessageSendClick(view: View) {
+        if(nearbyDiscovery.state.value == DiscoveryConnectionState.CONNECTED) {
+            nearbyDiscovery.sendMessage(et_msg.text.toString())
+            tv_msg.append("\nMe: " + et_msg.text.toString())
+        }
+        if(nearbyAdvertisement.state.value == AdvertisementConnectionState.CONNECTED) {
+            nearbyAdvertisement.sendMessage(et_msg.text.toString())
+            tv_msg.append("\nMe: " + et_msg.text.toString())
+        }
     }
 
     private fun connectViewModel() {
