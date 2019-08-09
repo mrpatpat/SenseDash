@@ -18,11 +18,16 @@
             android:theme="@style/AppTheme">
 
         <service
-                android:name="com.mrpatpat.sensedashcore.connection.BoxConnectionService"
+                android:name=".NearbyDiscoveryService"
                 android:enabled="true"
                 android:exported="true">
         </service>
 
+        <service
+                android:name=".NearbyAdvertisementService"
+                android:enabled="true"
+                android:exported="true">
+        </service>
         <activity android:name=".DebugActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

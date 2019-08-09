@@ -36,7 +36,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    /* compileOnly 'com.google.android.things:androidthings:+' TODO */
+    compileOnly 'com.google.android.things:androidthings:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.41"
+    implementation 'com.google.android.gms:play-services-nearby:11.8.0'
+    implementation "android.arch.lifecycle:extensions:1.1.1 "
     implementation project(path: ':core')
 }

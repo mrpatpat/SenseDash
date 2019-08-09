@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">sensedashcore</string>
     <string name="nearby_service_id">SENSEDASH_SERVICE</string>
+    <string name="nearby_endpoint_message">messages</string>
+    <string name="nearby_thing_user_name">SenseDashBoxUser</string>
+    <string name="nearby_app_user_name">SenseDashAppUser</string>
 </resources>

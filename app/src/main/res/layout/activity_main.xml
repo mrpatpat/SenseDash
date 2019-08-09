@@ -1,80 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:rowCount="2"
+                                                   android:columnCount="4" android:id="@+id/gridLayout">
+    <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:rowCount="2"
-            android:columnCount="4">
+            android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" android:id="@+id/cardView" app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_0"
-            android:layout_row="0"
-            android:layout_column="0"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progress_nearby"
+                    android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_nearby_disconnect"/>
+            <Button
+                    android:text="Connect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bt_nearby_connect" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_discovery" android:layout_marginTop="8dp"
+                    android:onClick="onNearbyDiscoveryConnectClick"/>
+            <Button
+                    android:text="Disconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bt_nearby_disconnect"
+                    android:onClick="onNearbyDiscoveryDisconnectClick"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_nearby_connect"
+                    android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            <TextView
+                    android:text="-"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_nearby"
+                    app:layout_constraintBottom_toTopOf="@+id/progress_nearby"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_nearby_disconnect" android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp" android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/title_discovery"/>
+            <TextView
+                    android:text="Nearby Discovery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/title_discovery"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" android:layout_marginStart="8dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/cardView" android:layout_marginBottom="8dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_1"
-            android:layout_row="0"
-            android:layout_column="1"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_2"
-            android:layout_row="0"
-            android:layout_column="2"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_3"
-            android:layout_row="0"
-            android:layout_column="3"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_4"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_5"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_6"
-            android:layout_row="1"
-            android:layout_column="2"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:text="@string/dummy_voltage"
-            android:id="@+id/tv_voltage_7"
-            android:layout_row="1"
-            android:layout_column="3"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:gravity="center"/>
-
-</GridLayout>
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progress_nearby_advertisement"
+                    android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_nearby_disconnect_advertisement"/>
+            <Button
+                    android:text="Connect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bt_nearby_connect_advertisement" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_advertisement" android:layout_marginTop="8dp"
+                    android:onClick="onNearbyAdvertisementConnectClick"/>
+            <Button
+                    android:text="Disconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bt_nearby_disconnect_advertisement"
+                    android:onClick="onNearbyAdvertisementDisconnectClick"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_nearby_connect_advertisement"
+                    android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            <TextView
+                    android:text="-"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_nearby_advertisement"
+                    app:layout_constraintBottom_toTopOf="@+id/progress_nearby_advertisement"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_nearby_disconnect_advertisement" android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/title_advertisement"
+                    android:layout_marginBottom="8dp"/>
+            <TextView
+                    android:text="Nearby Advertisement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/title_advertisement"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" android:layout_marginStart="8dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
