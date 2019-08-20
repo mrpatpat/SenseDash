@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">SenseDash</string>
     <string name="dummy_voltage">3.2V</string>
+
+    <string name="title_activity_fullscreen">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

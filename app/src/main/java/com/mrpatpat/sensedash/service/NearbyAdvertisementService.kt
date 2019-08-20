@@ -1,4 +1,4 @@
-package com.mrpatpat.sensedash
+package com.mrpatpat.sensedash.service
 
 import android.content.Intent
 import android.os.Binder
@@ -11,38 +11,36 @@ import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 import java.nio.charset.StandardCharsets
 
-enum class DiscoveryConnectionState {
+enum class AdvertisementConnectionState {
     DISCONNECTED,
-    DISCOVERING,
-    REQUESTING,
+    ADVERTISING,
     ACCEPTING,
     CONNECTED
 }
 
-class NearbyDiscoveryServiceBinder(private val nearbyDiscoveryService: NearbyDiscoveryService) : Binder() {
-    fun getService(): NearbyDiscoveryService = nearbyDiscoveryService
+class NearbyAdvertisementServiceBinder(private val nearbyAdvertisementService: NearbyAdvertisementService) : Binder() {
+    fun getService(): NearbyAdvertisementService = nearbyAdvertisementService
 }
 
-class NearbyDiscoveryRepository(private val nearbyDiscoveryService: NearbyDiscoveryService) {
-    fun getConnectionState(): LiveData<DiscoveryConnectionState> = nearbyDiscoveryService.state
+class NearbyAdvertisementRepository(private val nearbyAdvertisementService: NearbyAdvertisementService) {
+    fun getConnectionState(): LiveData<AdvertisementConnectionState> = nearbyAdvertisementService.state
 }
 
-class NearbyDiscoveryService : LifecycleService() {
+class NearbyAdvertisementService : LifecycleService() {
 
-    private val tag = "NEARBY_DISCOVERY_SERVICE"
+    private val tag = "NEARBY_ADVERTISEMENT_SERVICE"
     private val service = "ECHO_SERVICE"
-    private val user = "CLIENTUSER"
-
+    private val user = "HOSTUSER"
     private var connectedEndpoint = ""
 
     private val connectionsClient: ConnectionsClient by lazy { Nearby.getConnectionsClient(this) }
 
-    val state: MutableLiveData<DiscoveryConnectionState> = MutableLiveData()
+    val state: MutableLiveData<AdvertisementConnectionState> = MutableLiveData()
     val msg: MutableLiveData<String> = MutableLiveData()
 
     override fun onCreate() {
         super.onCreate()
-        state.value = DiscoveryConnectionState.DISCONNECTED
+        state.value = AdvertisementConnectionState.DISCONNECTED
     }
 
     fun connect() {
@@ -50,47 +48,29 @@ class NearbyDiscoveryService : LifecycleService() {
     }
 
     fun disconnect() {
-        state.value = DiscoveryConnectionState.DISCONNECTED
+        state.value = AdvertisementConnectionState.DISCONNECTED
         connectionsClient.stopAllEndpoints()
-        connectionsClient.stopDiscovery()
+        connectionsClient.stopAdvertising()
     }
 
     private fun reconnect() {
         disconnect()
-        state.value = DiscoveryConnectionState.DISCOVERING
+        state.value = AdvertisementConnectionState.ADVERTISING
         Log.i(tag , state.toString())
         connectionsClient
-            .startDiscovery(
+            .startAdvertising(
+                user,
                 service,
-                endpointDiscoveryCallback,
-                DiscoveryOptions(Strategy.P2P_STAR)
+                connectionLifecycleCallback,
+                AdvertisingOptions(Strategy.P2P_STAR)
             )
             .addOnFailureListener { reconnect() }
             .addOnFailureListener { e -> Log.e(tag, e.toString()) }
     }
 
-    private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
-        override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            state.value = DiscoveryConnectionState.REQUESTING
-            connectionsClient
-                .requestConnection(
-                    user,
-                    endpointId,
-                    connectionLifecycleCallback
-                )
-                .addOnFailureListener { reconnect() }
-                .addOnFailureListener { e -> Log.e(tag, e.toString()) }
-
-        }
-
-        override fun onEndpointLost(endpointId: String) {
-            reconnect()
-        }
-    }
-
     private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
-            state.value = DiscoveryConnectionState.ACCEPTING
+            state.value = AdvertisementConnectionState.ACCEPTING
             connectionsClient
                 .acceptConnection(
                     endpointId,
@@ -104,8 +84,8 @@ class NearbyDiscoveryService : LifecycleService() {
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
             if(result.status.isSuccess) {
                 connectedEndpoint = endpointId
-                state.value = DiscoveryConnectionState.CONNECTED
-                connectionsClient.stopDiscovery()
+                state.value = AdvertisementConnectionState.CONNECTED
+                connectionsClient.stopAdvertising()
             } else {
                 reconnect()
             }
@@ -129,7 +109,7 @@ class NearbyDiscoveryService : LifecycleService() {
     
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
-        return NearbyDiscoveryServiceBinder(this)
+        return NearbyAdvertisementServiceBinder(this)
     }
 
 }
