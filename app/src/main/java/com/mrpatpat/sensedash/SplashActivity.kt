@@ -16,6 +16,7 @@ import com.mrpatpat.sensedash.service.NearbyAdvertisementService
 import com.mrpatpat.sensedash.service.NearbyAdvertisementServiceBinder
 import com.mrpatpat.sensedash.service.NearbyDiscoveryService
 import com.mrpatpat.sensedash.service.NearbyDiscoveryServiceBinder
+import com.mrpatpat.sensedash.widget.gauge.value.ValueGaugeDebugActivity
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -63,7 +64,7 @@ class SplashActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
     }
 
     private fun openDebugActivity() {
-        val intent = Intent(this, DebugActivity::class.java)
+        val intent = Intent(this, ValueGaugeDebugActivity::class.java)
         startActivity(intent)
     }
 

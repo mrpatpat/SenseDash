@@ -16,6 +16,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".widget.gauge.value.ValueGaugeDebugActivity">
+        </activity>
         <activity
                 android:name=".SplashActivity"
                 android:configChanges="orientation|keyboardHidden|screenSize"
