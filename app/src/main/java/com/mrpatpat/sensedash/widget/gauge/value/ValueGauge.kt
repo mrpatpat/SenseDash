@@ -9,22 +9,21 @@ import android.util.AttributeSet
 import android.view.View
 import com.mrpatpat.sensedash.R
 import androidx.core.content.res.ResourcesCompat
-
+import android.graphics.Rect
+import kotlin.math.min
 
 class ValueGauge : View {
 
-    private lateinit var textPaint: TextPaint
+    private var textPaint: TextPaint = TextPaint()
+    private val preAllocatedRect = Rect()
+
     private var _value: Int? = 0
     private var _unit = context.getString(R.string.unit_degree_celsius)
-
-    private var textWidth: Float = 0f
-    private var textHeight: Float = 0f
 
     var value: Int?
         get() = _value
         set(value) {
             _value = value
-            invalidatePaint()
             invalidate()
         }
 
@@ -32,7 +31,6 @@ class ValueGauge : View {
         get() = _unit
         set(unit) {
             _unit = unit
-            invalidatePaint()
             invalidate()
         }
 
@@ -48,8 +46,68 @@ class ValueGauge : View {
         init(attrs, defStyle)
     }
 
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
+        val paddingHorizontal = 10 //width.toFloat() * 0.1f
+        val paddingVertical = 10 //height.toFloat() * 0.1f
+
+        val labelSizePercent = 0.25f
+        val valueSizePercent = 0.75f
+
+        // align top left with padding to top and left, fills 25% of the whole view minus the padding
+        "OIL".let {
+            textPaint.textAlign = Paint.Align.CENTER
+            val desiredTextHeight = height.toFloat() * labelSizePercent - paddingVertical
+            val desiredTextWidth = width.toFloat() - paddingHorizontal
+            textPaint.color = Color.WHITE
+            setTextSizeToFitDesiredRect(textPaint, desiredTextWidth , desiredTextHeight, it)
+            textPaint.getTextBounds(it, 0, it.length, preAllocatedRect)
+            val currentTextHeight = preAllocatedRect.height().toFloat()
+            val currentTextWidth = preAllocatedRect.width().toFloat()
+            canvas.drawText(
+                it,
+                currentTextWidth / 2 + paddingHorizontal,
+                currentTextHeight + paddingVertical,
+                textPaint
+            )
+        }
+
+        // align bottom right with padding to bottom and left, fills 75% of the whole view minus the padding
+        getDisplayedText().let {
+            textPaint.textAlign = Paint.Align.CENTER
+            val desiredTextHeight = height.toFloat() * valueSizePercent -  paddingVertical
+            val desiredTextWidth = width.toFloat() - paddingHorizontal
+            setTextColorForLimits()
+            setTextSizeToFitDesiredRect(textPaint, desiredTextWidth, desiredTextHeight, it)
+            textPaint.getTextBounds("2", 0, 1, preAllocatedRect)
+            canvas.drawText(
+                it,
+                width - desiredTextWidth / 2 - paddingHorizontal, //TODO is a bit off
+                height.toFloat() - paddingVertical,
+                textPaint
+            )
+        }
+    }
+
+    private fun setTextColorForLimits() {
+        textPaint.color = getTextColor()
+    }
+
     private fun init(attrs: AttributeSet?, defStyle: Int) {
-        // Load attributes
+        loadAttributes(attrs, defStyle)
+        initPaint()
+        invalidate()
+    }
+
+    private fun initPaint() {
+        textPaint.apply {
+            flags = Paint.ANTI_ALIAS_FLAG
+            typeface = ResourcesCompat.getFont(context, R.font.digital_seven_mono)
+        }
+    }
+
+    private fun loadAttributes(attrs: AttributeSet?, defStyle: Int) {
         val a = context.obtainStyledAttributes(
             attrs, R.styleable.ValueGauge, defStyle, 0
         )
@@ -58,55 +116,32 @@ class ValueGauge : View {
         _unit = a.getString(R.styleable.ValueGauge_unit)
 
         a.recycle()
-
-        // Set up a default TextPaint object
-        textPaint = TextPaint().apply {
-            flags = Paint.ANTI_ALIAS_FLAG
-            textAlign = Paint.Align.CENTER
-            typeface = ResourcesCompat.getFont(context, R.font.digital_seven_mono)
-        }
-
-        // Update TextPaint and text measurements from attributes
-        invalidatePaint()
     }
 
-    private fun invalidatePaint() {
-        textPaint?.textSize = 40 * resources.displayMetrics.scaledDensity
-        textPaint?.let {
-            textWidth = it.measureText(getDisplayedText())
-            textHeight = it.fontMetrics.bottom
-        }
-        if(value!! > 150) {
-            textPaint.color = Color.RED
-        } else if(value!! > 120) {
-            textPaint.color = Color.YELLOW
-        } else {
-            textPaint.color = Color.WHITE
+    private fun getTextColor(): Int {
+        return when {
+            value!! > 150 -> Color.RED
+            value!! > 120 -> Color.YELLOW
+            else -> Color.WHITE
         }
     }
 
-    private fun getDisplayedText() = value.toString() + " " + unit
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-        val paddingLeft = paddingLeft
-        val paddingTop = paddingTop
-        val paddingRight = paddingRight
-        val paddingBottom = paddingBottom
-
-        val contentWidth = width - paddingLeft - paddingRight
-        val contentHeight = height - paddingTop - paddingBottom
-
-        getDisplayedText().let {
-            canvas.drawText(
-                it,
-                paddingLeft + (contentWidth - textWidth) / 2,
-                paddingTop + (contentHeight + textHeight) / 2,
-                textPaint
-            )
-        }
+    private fun getDisplayedText(): String {
+        return value.toString() + " " + unit
     }
+
+    private fun setTextSizeToFitDesiredRect(
+        paint: Paint,
+        desiredWidth: Float,
+        desiredHeight: Float,
+        text: String
+    ) {
+        val broadestText = "2".repeat(text.length)
+        val testTextSize = 48f
+        paint.textSize = testTextSize
+        paint.getTextBounds(broadestText, 0, broadestText.length, preAllocatedRect)
+        val desiredTextSize = testTextSize * min(desiredWidth / preAllocatedRect.width(), desiredHeight / preAllocatedRect.height())
+        paint.textSize = desiredTextSize
+    }
+
 }
